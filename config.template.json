@@ -1,0 +1,11 @@
+{
+  "host": "",
+  "port": 8883,
+  "clientId": "",
+  "thingName": "",
+  "caCert": "",
+  "clientCert": "",
+  "privateKey": "",
+  "region": "us-west-2",
+  "topic": ""
+}
