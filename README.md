@@ -24,6 +24,8 @@ Amazon Echo -(invoke)-> AWS Lambda -(Publish)-> AWS IoT <-(Subscribe)- Raspberry
   - Raspberry Pi からローカルネットワーク内に存在する Nature Remo に対して Local API を叩き、リモコン操作をする
 - Switch bot
   - Raspberry Pi から Bluetooth 経由でトリガーし、デバイスのスイッチをトグルする
+- Amazon CloudWatch Logs
+  - ログの記録。アクセス権限を付与するために IAM User の事前の登録と、そのキーペアの Raspberry Pi 上での設定が必要
 
 
 ## 設定
@@ -119,6 +121,36 @@ scan timeout
 
 ``` shell
 MAC_ADDR='c1:xx:xx:xx:xx:22'
+```
+
+### IAM User
+
+aws-sdk を通じて CloudWatch Logs にログを送信するために、以下のポリシーをアタッチした IAM User を作成する。
+
+``` json
+{
+  "Version":"2012-10-17",
+  "Statement": [
+     {
+       "Effect":"Allow",
+       "Action": [
+          "logs:PutLogEvents",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogStreams"
+       ],
+       "Resource":"arn:aws:logs:*:*:*"
+     }
+  ]
+}
+```
+
+さらに、そのキーペアを `~/.aws/credentials` に、以下のように設定する。
+
+```
+[default]
+aws_access_key_id = ACCESS_KEY
+aws_secret_access_key = SECRET_KEY
 ```
 
 ## 実行

@@ -5,12 +5,23 @@ const awsIot = require('aws-iot-device-sdk')
 const isUndefined = require('./is-undefined')
 const exec = require('child_process').exec
 const bunyan = require('bunyan')
-const bformat = require('bunyan-format')
-const formatOut = bformat({ outputMode: 'bunyan', levelInString: true })
+var createCWStream = require('bunyan-cloudwatch')
+var cwStream = createCWStream({
+  logGroupName: '/mansion-server/HomeMaidJane',
+  logStreamName: 'stream',
+  cloudWatchLogsOptions: {
+    region: 'us-west-2'
+  }
+})
 const logger = bunyan.createLogger({
   name: 'HomeMaidJane',
-  stream: formatOut,
-  level: 'info'
+  streams: [
+    {
+      level: 'info',
+      stream: cwStream,
+      type: 'raw'
+    }
+  ]
 })
 
 function main(args) {
